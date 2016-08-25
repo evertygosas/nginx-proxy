@@ -30,5 +30,16 @@ ENV DOCKER_HOST unix:///tmp/docker.sock
 
 VOLUME ["/etc/nginx/certs"]
 
+RUN mkdir /etc/nginx/vhost.d; \
+    { \
+        echo 'location /serv_status {'; \
+        echo 'stub_status;'; \
+        echo 'allow 10.0.0.0/8;'; \
+        echo 'allow 172.16.0.0/12;'; \
+        echo 'allow 127.0.0.1;'; \
+        echo 'deny all;'; \
+        echo '}'; \
+    } > /etc/nginx/vhost.d/default
+
 ENTRYPOINT ["/app/docker-entrypoint.sh"]
 CMD ["forego", "start", "-r"]
